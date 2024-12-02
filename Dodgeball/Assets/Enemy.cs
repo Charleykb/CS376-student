@@ -32,6 +32,11 @@ public class Enemy : MonoBehaviour
     public float CoolDownTime = 1;
 
     /// <summary>
+    /// Time of next shot firing
+    /// </summary>
+    private float NextFireTime;
+
+    /// <summary>
     /// Prefab for the orb it fires
     /// </summary>
     public GameObject OrbPrefab;
@@ -66,6 +71,7 @@ public class Enemy : MonoBehaviour
     {
         player = FindObjectOfType<Player>().transform;
         rigidBody = GetComponent<Rigidbody2D>();
+        NextFireTime = Time.time;
     }
 
     /// <summary>
@@ -75,6 +81,11 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         // TODO
+        if (Time.time > NextFireTime)
+        { 
+            NextFireTime += CoolDownTime;
+            Fire();
+        }
     }
 
     /// <summary>
@@ -84,6 +95,10 @@ public class Enemy : MonoBehaviour
     private void Fire()
     {
         // TODO
+        var orb = Instantiate(OrbPrefab, (transform.position + (Vector3)(1 * HeadingToPlayer)), Quaternion.identity);
+        Rigidbody2D orbRigidBody = orb.GetComponent<Rigidbody2D>();
+        orbRigidBody.mass = OrbMass;
+        orbRigidBody.velocity = (OrbVelocity * HeadingToPlayer);
     }
 
     /// <summary>

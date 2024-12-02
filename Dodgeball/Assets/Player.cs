@@ -27,8 +27,23 @@ public class Player : MonoBehaviour
     public float OrbVelocity = 10;
 
     /// <summary>
+    /// Our rigid body component
+    /// Used to apply forces so we can move around
+    /// </summary>
+    private Rigidbody2D rigidBody;
+
+    /// <summary>
+    /// Initialize rigidBody field
+    /// </summary>
+    // ReSharper disable once UnusedMember.Local
+    void Start()
+    {
+        rigidBody = GetComponent<Rigidbody2D>();
+    }
+
+    /// <summary>
     /// Handle moving and firing.
-    /// Called by Uniity every 1/50th of a second, regardless of the graphics card's frame rate
+    /// Called by Unity every 1/50th of a second, regardless of the graphics card's frame rate
     /// </summary>
     // ReSharper disable once UnusedMember.Local
     void FixedUpdate()
@@ -44,6 +59,14 @@ public class Player : MonoBehaviour
     void MaybeFire()
     {
         // TODO
+        var fireAxis = Input.GetAxis("Fire");
+        if (fireAxis == 1)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                FireOrb();
+            }
+        }
     }
 
     /// <summary>
@@ -54,6 +77,9 @@ public class Player : MonoBehaviour
     private void FireOrb()
     {
         // TODO
+        var orb = Instantiate(OrbPrefab, (transform.position + (1 * transform.right)), Quaternion.identity);
+        Rigidbody2D orbRigidBody = orb.GetComponent<Rigidbody2D>();
+        orbRigidBody.velocity = (OrbVelocity * transform.right);
     }
 
     /// <summary>
@@ -65,6 +91,12 @@ public class Player : MonoBehaviour
     void Manoeuvre()
     {
         // TODO
+        var horizontalAxis = Input.GetAxis("Horizontal");
+        var verticalAxis = Input.GetAxis("Vertical");
+        Vector2 joystickDirection = new Vector2(horizontalAxis, verticalAxis);
+        rigidBody.AddForce(EnginePower * joystickDirection);
+        var rotateAxis = Input.GetAxis("Rotate");
+        rigidBody.angularVelocity = (RotateSpeed * rotateAxis);
     }
 
     /// <summary>

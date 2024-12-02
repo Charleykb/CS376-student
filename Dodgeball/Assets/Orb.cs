@@ -1,3 +1,4 @@
+using System.Xml.Schema;
 using UnityEngine;
 
 /// <summary>
@@ -13,6 +14,7 @@ public class Orb : MonoBehaviour
     void OnBecameInvisible()
     {
         // TODO
+        Destroy(gameObject);
     }
 
     /// <summary>
@@ -23,5 +25,10 @@ public class Orb : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         // TODO
+        Collider2D otherCollider = collision.collider;
+        if (otherCollider.gameObject.GetComponent<Orb>() == null)
+        {
+            Destroy(gameObject);
+        }
     }
 }
